@@ -20,6 +20,7 @@ public class Timer : MonoBehaviour
         minutos = (int)(_Time / 60f);
         segundos = (int)(_Time - minutos * 60f);
         decimas = (int)((_Time - (int)_Time) * 100f);
-        TimerText.text = string.Format("{0:00},{1:00},{2:00}", minutos, segundos, decimas);                  
+        TimerText.text = string.Format("{0:00},{1:00},{2:00}", minutos, segundos, decimas);    
     }
+
 }
