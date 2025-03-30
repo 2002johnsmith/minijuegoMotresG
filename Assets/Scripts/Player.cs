@@ -10,7 +10,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float velocity;
     [SerializeField] private Rigidbody2D rgb2D;
     public float vida = 10;
-    [SerializeField] private TMP_Text vidaTexto; // Texto en pantalla para mostrar la vida
+    [SerializeField] private TMP_Text vidaTexto; 
+    [SerializeField] private Timer timer; 
 
     [Header("Salto")]
     [SerializeField] private float jumpforce;
@@ -25,7 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     public Color[] colores = new Color[4];
     private int colorIndex = 0;
-    private bool enColision = false; // Variable para controlar si está colisionando
+    private bool enColision = false; 
 
     float _direction = 0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -81,6 +82,8 @@ public class Player : MonoBehaviour
         enColision = true;
         if (collision.tag == "ganaste")
         {
+            PlayerPrefs.SetString("TiempoFinal", timer.GetComponent<Timer>().TimerText.text);
+            PlayerPrefs.Save();
             Ganaste();
         }
     }
@@ -95,7 +98,7 @@ public class Player : MonoBehaviour
 
         if (colisionObjeto != null)
         {
-            if (colisionObjeto.color != spriteRenderer.color) // Si el color es diferente
+            if (colisionObjeto.color != spriteRenderer.color) 
             {
                 Debug.Log("¡Recibes daño!");
                 Vida();
