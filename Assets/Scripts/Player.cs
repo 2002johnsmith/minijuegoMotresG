@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private float velocity;
     [SerializeField] private Rigidbody2D rgb2D;
-    [SerializeField] private float vida = 10;
+    public float vida = 10;
     [SerializeField] private TMP_Text vidaTexto; // Texto en pantalla para mostrar la vida
 
 
@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     public Color[] colores = new Color[4];
     private int colorIndex = 0;
+    private bool enColision = false; // Variable para controlar si está colisionando
 
     float _direction = 0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -49,10 +50,17 @@ public class Player : MonoBehaviour
             rgb2D.AddForce(Vector2.up * jumpforce, ForceMode2D.Impulse);
             countJumps++;
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1)) CambiarColor(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) CambiarColor(1);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) CambiarColor(2);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) CambiarColor(3);
+        if (!enColision)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) CambiarColor(0);
+            if (Input.GetKeyDown(KeyCode.Alpha2)) CambiarColor(1);
+            if (Input.GetKeyDown(KeyCode.Alpha3)) CambiarColor(2);
+            if (Input.GetKeyDown(KeyCode.Alpha4)) CambiarColor(3);
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            CambiarColor();
+        }
     }
     private void FixedUpdate()
     {
@@ -75,7 +83,15 @@ public class Player : MonoBehaviour
             VerificarColor(collision.transform);
             ActualizarTextoVida();
         }
+        enColision = true;
+
     }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // Cuando deja de colisionar, permitir cambiar de color nuevamente
+        enColision = false;
+    }
+
 
     private void VerificarColor(Transform objeto)
     {
@@ -110,5 +126,10 @@ public class Player : MonoBehaviour
         {
             vidaTexto.text = "Vida: " + vida;
         }
+    }
+    void CambiarColor()
+    {
+        colorIndex = (colorIndex + 1) % colores.Length; 
+        spriteRenderer.color = colores[colorIndex];
     }
 }
