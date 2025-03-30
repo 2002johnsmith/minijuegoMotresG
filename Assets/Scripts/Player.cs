@@ -12,7 +12,6 @@ public class Player : MonoBehaviour
     public float vida = 10;
     [SerializeField] private TMP_Text vidaTexto; // Texto en pantalla para mostrar la vida
 
-
     [Header("Salto")]
     [SerializeField] private float jumpforce;
     [SerializeField] private int countJumps;
@@ -57,10 +56,6 @@ public class Player : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha3)) CambiarColor(2);
             if (Input.GetKeyDown(KeyCode.Alpha4)) CambiarColor(3);
         }
-        if (Input.GetMouseButtonDown(0))
-        {
-            CambiarColor();
-        }
     }
     private void FixedUpdate()
     {
@@ -84,15 +79,16 @@ public class Player : MonoBehaviour
             ActualizarTextoVida();
         }
         enColision = true;
-
+        if (collision.tag == "ganaste")
+        {
+            Ganaste();
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         // Cuando deja de colisionar, permitir cambiar de color nuevamente
         enColision = false;
     }
-
-
     private void VerificarColor(Transform objeto)
     {
         SpriteRenderer colisionObjeto = objeto.GetComponent<SpriteRenderer>();
@@ -114,6 +110,12 @@ public class Player : MonoBehaviour
     {
         vida -= 1;
         Debug.Log("Vida restante: " + vida);
+
+        if (vida <= 0)
+        {
+            Perdiste();
+        }
+
     }
     void CambiarColor(int index)
     {
@@ -127,9 +129,24 @@ public class Player : MonoBehaviour
             vidaTexto.text = "Vida: " + vida;
         }
     }
-    void CambiarColor()
+    public void CambiarColor(Color nuevoColor)
     {
-        colorIndex = (colorIndex + 1) % colores.Length; 
-        spriteRenderer.color = colores[colorIndex];
+        spriteRenderer.color = nuevoColor;
+        for (int i = 0; i < colores.Length; i++)
+        {
+            if (colores[i] == nuevoColor)
+            {
+                colorIndex = i;
+                break;
+            }
+        }
+    }
+    public void Ganaste()
+    {
+        SceneManager.LoadScene("Ganaste");
+    }
+    public void Perdiste()
+    {
+        SceneManager.LoadScene("Perdiste"); 
     }
 }
